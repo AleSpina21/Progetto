@@ -1,1 +1,1 @@
-Il Progetto è una piattaforma di ricerca astronomica in cui è possibile analizzare e visualizzare diversi aspettti dell'astronomia moderna. Si inizializza scrivendo in terminale "uv run streamlit run main.py".
+Il Progetto è una piattaforma di ricerca astronomica in cui è possibile analizzare e visualizzare diversi aspettti dell'astronomia moderna. Si inizializza scrivendo in terminale "uv run streamlit run main.py". Proviamo adesso a cambiare sta cosa.
