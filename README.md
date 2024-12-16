@@ -1,2 +1,0 @@
-Read me
-In quest progetto è stato creato un interfaccia streamlit riguardo alla ricerca astronomica. La prima facciata è un'introduzione all'astronomia, mentre poi nella sidebar è possibile scegliere vari argomenti: Telescopi, Esopianeti e Satelliti.
