@@ -33,46 +33,66 @@ def final_dataset(df):
     df_final = filtered_df.drop(columns=drop_col)
     return df_final
 
-
 import streamlit as st
 import pandas as pd
-import pydeck as pdk
+import plotly.graph_objects as go 
 
-# Funzione per caricare il dataset
+# Funzione per caricare i dati
 @st.cache
 def load_data():
-    # Sostituisci con il tuo dataset
-    data = pd.read_csv("emissioni.csv")
-    return data
+    return pd.read_csv("emissioni.csv")
 
-# Carica i dati
+# Carica il dataset
 data = load_data()
 
-# Filtro anno scelto dall'utente
-year = st.slider("Seleziona un anno", min_value=data["year"].min(), max_value=data["year"].max(), step=1)
+# Seleziona l'anno con uno slider
+year = st.slider("Seleziona un anno", min_value=1800, max_value=2023, step=1)
 filtered_data = data[data["year"] == year]
 
-# Layer per le emissioni come "nuvole"
-layer = pdk.Layer(
-    "HeatmapLayer",
-    data=filtered_data,
-    get_position=["lon", "lat"],
-    get_weight="emissioni",  # Intensità basata sulle emissioni
-    radius=50000,  # Raggio delle nuvole (in metri)
-    opacity=0.8,  # Trasparenza delle nuvole
+# Calcola l'intensità globale delle emissioni
+global_emission_intensity = filtered_data["emissioni"].sum()
+
+# Creazione della sfera del globo
+theta = []
+phi = []
+emission_colors = []
+
+# Creazione della griglia sferica per il globo
+for lat in range(-90, 91, 5):  # Passo di 5 gradi in latitudine
+    for lon in range(-180, 181, 5):  # Passo di 5 gradi in longitudine
+        theta.append(lon)
+        phi.append(lat)
+        emission_colors.append(global_emission_intensity)  # Valore uniforme per l'anno selezionato
+
+# Normalizza i valori delle emissioni per colorazione
+max_emission = data["emissioni"].sum()
+colors = [(e / max_emission) for e in emission_colors]
+
+# Crea la visualizzazione 3D
+fig = go.Figure()
+
+# Aggiungi la sfera come superficie
+fig.add_trace(
+    go.Mesh3d(
+        x=[lon for lon in theta],
+        y=[lat for lat in phi],
+        z=[0 for _ in theta],
+        intensity=colors,
+        colorscale="Reds",  # Gradiente di colori (rosso per emissioni alte)
+        opacity=0.7,
+        showscale=True,
+    )
 )
 
-# Stato iniziale della mappa
-view_state = pdk.ViewState(
-    latitude=20,  # Centro della mappa
-    longitude=0,
-    zoom=1.5,
-    pitch=45,  # Angolazione per vedere l'altezza
+# Configura il layout del globo
+fig.update_layout(
+    scene=dict(
+        xaxis=dict(showbackground=False),
+        yaxis=dict(showbackground=False),
+        zaxis=dict(showbackground=False),
+    ),
+    title=f"Emissioni globali nel {year}",
 )
 
-# Configura la mappa
-st.pydeck_chart(pdk.Deck(
-    layers=[layer],
-    initial_view_state=view_state,
-    tooltip={"text": "{emissioni} emissioni"},
-))
+# Mostra il globo 3D
+st.plotly_chart(fig)
