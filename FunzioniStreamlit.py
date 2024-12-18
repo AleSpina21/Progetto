@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import pydeck as pdk
 
+
 # Creo la mappa con i telescopi
 def create_map(telescope_data=None):
     df = pd.read_csv("telescopi.csv")
@@ -67,94 +68,5 @@ def add_telescope():
             st.success(f"Il telescopio '{nome}' è stato aggiunto con successo!")
     else:
         st.error("Non ti è possibile aggiungere telescopi.")
-
-
-"""
-def imputare_con_regressione(df, col):
-    # Convertiamo la colonna target in numerico, forzando i valori non numerici a diventare NaN
-    df[col] = pd.to_numeric(df[col], errors='coerce')
-    
-    # Controlla quanti NaN ci sono nella colonna target
-    print(f"Valori mancanti nella colonna {col}: {df[col].isna().sum()}")
-
-    # Eseguiamo un'imputazione preliminare per la colonna target
-    imputer_target = SimpleImputer(strategy='mean')  # Imputiamo i NaN con la media
-    df[col] = imputer_target.fit_transform(df[[col]])
-    
-    # Selezioniamo le righe con valori validi nella colonna target
-    train_data = df[df[col].notna()]
-    if train_data.empty:
-        raise ValueError(f"Non ci sono dati validi per la colonna {col} per eseguire la regressione.")
-    
-    # Selezioniamo le caratteristiche per la regressione (tutte le colonne tranne 'mass')
-    X_train = train_data.drop(columns=[col])
-    y_train = train_data[col]
-    
-    # Imputiamo i valori NaN nelle caratteristiche con la media (o mediana)
-    imputer = SimpleImputer(strategy='mean')  # Puoi anche usare 'median' o 'most_frequent'
-    X_train = imputer.fit_transform(X_train)
-    
-    # Creiamo il modello di regressione lineare
-    model = LinearRegression()
-    
-    # Alleniamo il modello
-    model.fit(X_train, y_train)
-    
-    # Ora stimiamo i valori per le righe con NaN nella colonna target
-    test_data = df[df[col].isna()]
-    if test_data.empty:
-        print(f"Nessun valore mancante da imputare nella colonna {col}.")
-        return df  # Se non ci sono valori mancanti da imputare, ritorniamo il dataframe originale
-    
-    X_test = test_data.drop(columns=[col])
-    
-    # Imputiamo i valori NaN nelle caratteristiche del test set
-    X_test = imputer.transform(X_test)
-    
-    # Prediciamo i valori mancanti
-    predictions = model.predict(X_test)
-    
-    # Imputiamo i valori stimati nel dataframe
-    df.loc[df[col].isna(), col] = predictions
-    
-    
-    return df
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

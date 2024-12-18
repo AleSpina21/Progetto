@@ -1,42 +1,15 @@
-import streamlit as st
+from sklearn.impute import KNNImputer
+from sklearn.experimental import enable_iterative_imputer
+import PlanetFunctions as PF
 import pandas as pd
-import pydeck as pdk
-
-# Funzione per caricare il dataset
-@st.cache
-def load_data():
-    # Sostituisci con il tuo dataset
-    data = pd.read_csv("emissioni.csv")
-    return data
-
-# Carica i dati
-data = load_data()
-
-# Filtro anno scelto dall'utente
-year = st.slider("Seleziona un anno", min_value=data["year"].min(), max_value=data["year"].max(), step=1)
-filtered_data = data[data["year"] == year]
-
-# Layer per le emissioni come "nuvole"
-layer = pdk.Layer(
-    "HeatmapLayer",
-    data=filtered_data,
-    get_position=["lon", "lat"],
-    get_weight="emissioni",  # Intensità basata sulle emissioni
-    radius=50000,  # Raggio delle nuvole (in metri)
-    opacity=0.8,  # Trasparenza delle nuvole
-)
-
-# Stato iniziale della mappa
-view_state = pdk.ViewState(
-    latitude=20,  # Centro della mappa
-    longitude=0,
-    zoom=1.5,
-    pitch=45,  # Angolazione per vedere l'altezza
-)
-
-# Configura la mappa
-st.pydeck_chart(pdk.Deck(
-    layers=[layer],
-    initial_view_state=view_state,
-    tooltip={"text": "{emissioni} emissioni"},
-))
+import streamlit as st
+import numpy as np
+url = "https://raw.githubusercontent.com/OpenExoplanetCatalogue/oec_tables/refs/heads/master/comma_separated/open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
+df = pd.read_csv(url, delimiter=",", index_col=0)
+df = df.fillna("NA")
+df.replace("NA", np.nan, inplace=True)
+d = PF.final_dataset(df)
+def imputer(d):
+    knn_imputer = KNNImputer(n_neighbors=3, weights="uniform")
+    df_KNN = st.dataframe(knn_imputer.fit_transform(d))
+    return df_KNN
