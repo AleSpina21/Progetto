@@ -1,28 +1,5 @@
-import altair as alt
-import streamlit as st
 from sklearn.linear_model import LinearRegression
-
-
-def plot_detection_methods(df):
-    selected_year = st.slider("Seleziona l'anno", min_value=int(2002), max_value=int(2023), step=1)
-    filtered_data = df[df['discoveryyear'] == selected_year]
-    method_counts = filtered_data['discoverymethod'].value_counts().reset_index()
-    method_counts.columns = ['discoverymethod', 'count']
-    chart = alt.Chart(method_counts).mark_bar().encode(
-        x=alt.X('discoverymethod:N', title='Metodo di rilevazione', sort='y'),
-        y=alt.Y('count:Q', title='Numero di rilevazioni'),
-        color='discoverymethod:N',
-        tooltip=['discoverymethod:N', 'count:Q']
-    ).properties(
-        title=f"Numero di rilevazioni per metodo nel {selected_year}",
-        width=800,
-        height=400
-    )
-    
-    st.altair_chart(chart, use_container_width=True)
-
-
-
+import streamlit as st
 def final_dataset(df):
     eliminate_columns = [
          "binaryflag", "age", "discoverymethod", "discoveryyear", "lastupdate", "system_rightascension", "system_declination", "system_distance", "hoststar_age", "list"
@@ -51,4 +28,27 @@ def data_estimates(d):
         predict = model.predict(x_test)
 
         d.loc[d[target].isna(), target] = predict
+    count_na = d.isna().sum()
+    total = count_na.sum()
+    st.write(f"Il dataset ha {total} valori mancanti!")
     return d
+
+# funzione che dice se un esopianeta è abitabile o meno, ovvero se valgono le condizioni:
+#  distanza dalla stella, massa, temperatura della stella
+def habitable(d):
+    distance_min = 0.95
+    distance_max = 1.05
+    mass_min = 0.9
+    mass_max = 1.2
+    temp_star_min = 4800
+    temp_star_max = 6300
+
+    habitables = d[
+        (d["mass"] >= mass_min) & (d["mass"] <= mass_max) &
+        (d["semimajoraxis"] >= distance_min) & (d["semimajoraxis"] <= distance_max) &
+        (d["hoststar_temperature"] >= temp_star_min) & (d["hoststar_temperature"] <= temp_star_max)
+    ]
+    
+    return habitables
+
+

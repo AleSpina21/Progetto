@@ -4,6 +4,7 @@ import FunzioniStreamlit as FS
 import PlanetFunctions as PF
 import numpy as np
 ## DA FARE: STATISTICHE E GRAFICI SU QUESTE
+## OCCHIO ALLE DEPENDENCIES 
 
 url = "https://raw.githubusercontent.com/OpenExoplanetCatalogue/oec_tables/refs/heads/master/comma_separated/open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
 df = pd.read_csv(url, delimiter=",", index_col=0)
@@ -64,7 +65,7 @@ elif selezione == "Esopianeti":
              "Per confermare un pianeta e meglio definirne le caratteristiche fisiche è necessario l'utilizzo di più tecniche differenti. Al momento attuale la tecnica di maggior successo è quella del transito. "
              "I primi risultati sono stati ottenuto con il metodo delle velocità radiali. Sono stati scoperti attualmente (2023) più di 5000 pianeti extrasolari. "
              "Già nel 1955 Otto Struve aveva prospettato la possibilità di scoprire sistemi planetari extrasolari proprio con il metodo del transito e delle velocità radiali.")
-    PF.plot_detection_methods(df)
+    FS.plot_detection_methods(df)
     st.write("Dal 2013 si nota un importante aumento nelle rilevazioni, soprattutto attraverso il metodo si transizione, questo è dovuto al fatto che nel 2009 la NASA ha iniziato la missione KEPLER. La missione, durata quasi 10 anni "
              "aveva come obiettivo quello di scoprire esopianeti e in particolare quelli che potenzialmente potrebbero ospitare vita extraterrestre.")
     st.subheader("Ci sono esopianeti abitabili?")
@@ -74,15 +75,23 @@ elif selezione == "Esopianeti":
     df1 = PF.final_dataset(df)
     df1 = df1.apply(pd.to_numeric, errors = "coerce")
     st.write("A questo punto manca stimare gli elementi mancanti. Operando una regressione si ottiene il dataset (prime 20 righe)")
-    st.dataframe(PF.data_estimates(df1).head(20))
-    st.write("ATTENZIONE queste stime sono state fatte attraverso un modello di regressione LINEARE, perciò non sono scientificamente approvate.")
+    df2 = PF.data_estimates(df1)
+    st.dataframe(df2.head(20))
+    st.write("ATTENZIONE queste stime sono state fatte attraverso un modello di regressione LINEARE, perciò non sono scientificamente approvate. Inoltre, valori negativi sono possibili, in quanto sono in confronto a valori di alcuni corpi del Sistema Solare (es. Terra, Giove, Sole).")
     st.write("")
     st.write("")
-    st.write("A questo punto, possiamo fare una valutazione su quanti di questi esopianeti sono potenzialmente abitabili.")
+    st.write("Ora possiamo trovare i pianeti potenzialmente abitabili: Stanno in un determinato raggio dalla loro stella, hanno una certa massa e la loro stella deve avere una certa temperatura:")
+    df_habit = PF.habitable(df2)
+    names = df_habit.index.tolist()
+    for name in names:
+        st.write(name)
+    st.write("Ovviamente, ci sono tantissimi altri fattori da tenere in considerazione, ma questo è solo un algoritmo iniziale, se si rilevano altri fattori importanti basta aggiungerli.")
+    st.write("")
+    st.write("")
+    
 elif selezione == "Satelliti":
     st.title("Satelliti")
-    st.write("Il mondo dei satelliti è affascinante, contribuiscono sia alla conoscenza dello spazio che allo studio approfondito dell'atmosfera terrestre o della crosta terrestre.")
-
+    st.write("Il mondo dei satelliti è affascinante, contribuiscono sia alla conoscenza dello spazio che allo studio approfondito della Terra.")
 
 
 

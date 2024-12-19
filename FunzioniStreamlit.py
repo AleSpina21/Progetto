@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pydeck as pdk
-
+import altair as alt
 
 # Creo la mappa con i telescopi
 def create_map(telescope_data=None):
@@ -69,4 +69,20 @@ def add_telescope():
     else:
         st.error("Non ti è possibile aggiungere telescopi.")
 
-
+def plot_detection_methods(df):
+    selected_year = st.slider("Seleziona l'anno", min_value=int(2002), max_value=int(2023), step=1)
+    filtered_data = df[df['discoveryyear'] == selected_year]
+    method_counts = filtered_data['discoverymethod'].value_counts().reset_index()
+    method_counts.columns = ['discoverymethod', 'count']
+    chart = alt.Chart(method_counts).mark_bar().encode(
+        x=alt.X('discoverymethod:N', title='Metodo di rilevazione', sort='y'),
+        y=alt.Y('count:Q', title='Numero di rilevazioni'),
+        color='discoverymethod:N',
+        tooltip=['discoverymethod:N', 'count:Q']
+    ).properties(
+        title=f"Numero di rilevazioni per metodo nel {selected_year}",
+        width=800,
+        height=400
+    )
+    
+    st.altair_chart(chart, use_container_width=True)
