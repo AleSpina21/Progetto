@@ -3,13 +3,18 @@ import streamlit as st
 import FunzioniStreamlit as FS
 import PlanetFunctions as PF
 import numpy as np
+import Archeology as AR
+import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter
+
+
 ## DA FARE: STATISTICHE E GRAFICI SU QUESTE
 ## OCCHIO ALLE DEPENDENCIES 
 
 url = "https://raw.githubusercontent.com/OpenExoplanetCatalogue/oec_tables/refs/heads/master/comma_separated/open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
 df = pd.read_csv(url, delimiter=",", index_col=0)
 df = df.fillna("NA")  # ci sono dei valori mancanti, li ho riscritti con NA
-df.replace("NA", np.nan, inplace=True)
+df.replace("NA", np.nan, inplace=True) # Forzo la numericità nei NA
 
 
 
@@ -92,6 +97,29 @@ elif selezione == "Esopianeti":
 elif selezione == "Satelliti":
     st.title("Satelliti")
     st.write("Il mondo dei satelliti è affascinante, contribuiscono sia alla conoscenza dello spazio che allo studio approfondito della Terra.")
+    st.subheader("Utilizzo in Archeologia")
+    st.write("Un utilizzo molto affascinante della mappatura satellitare è in archeologia, in particolare per la scoperta di segni di civiltà perdute. Negli ultimi 30 anni questo è un metodo molto utilizzato nel settore. I metodi più utilizzati sono le immagini a infrarosso, radar o il LiDAR (Light Detection and Ranging), che penetra il fogliame per mappare la topografia del terreno e rivelare resti nascosti. "
+             "Un esempio interessante sono le piramidi Maya in Messico, ancora oggi, attraverso immagini satellitari, si stanno scoprendo sempre più strutture antiche create dai nostri antenati e un modo efficace è usare le immagini radar: ")
+    image_path = "PiramideUxmal.png"
+    image = AR.load_image_with_pillow(image_path)
+    view_option = st.radio("Seleziona la modalità di visualizzazione:",["Vista normale", "Vista radar"])
+    if view_option == "Vista normale":
+        st.write("### Vista normale")
+        fig, ax = plt.subplots()
+        ax.imshow(image, cmap='gray')  # Mostra l'immagine in scala di grigi, perché se no usciva brutto.
+        ax.set_title("Gran Piramide di Uxmal: Originale")
+        st.pyplot(fig)
+    elif view_option == "Vista radar":
+        st.write("### Vista radar")
+        radar_view = gaussian_filter(image, sigma=10)
+        fig, ax = plt.subplots()
+        ax.imshow(radar_view, cmap='inferno')  # Mostra l'immagine con il filtro radar
+        ax.set_title("Gran Piramide di Uxmal: Radar")
+        st.pyplot(fig)
+    st.write("Le aree con colori più intensi nella vista radar rappresentano potenziali strutture artificiali, come piramidi o altre costruzioni. In un'analisi reale, si trovano algoritmi molto più complessi per la rilevazione anche di dati sotterranei.")
+
+
+
 
 
 

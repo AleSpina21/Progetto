@@ -1,5 +1,6 @@
 from sklearn.linear_model import LinearRegression
 import streamlit as st
+
 def final_dataset(df):
     eliminate_columns = [
          "binaryflag", "age", "discoverymethod", "discoveryyear", "lastupdate", "system_rightascension", "system_declination", "system_distance", "hoststar_age", "list"
