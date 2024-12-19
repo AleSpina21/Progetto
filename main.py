@@ -11,7 +11,7 @@ from scipy.ndimage import gaussian_filter
 ## DA FARE: STATISTICHE E GRAFICI SU QUESTE
 ## OCCHIO ALLE DEPENDENCIES 
 
-url = "https://raw.githubusercontent.com/OpenExoplanetCatalogue/oec_tables/refs/heads/master/comma_separated/open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
+url = "open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
 df = pd.read_csv(url, delimiter=",", index_col=0)
 df = df.fillna("NA")  # ci sono dei valori mancanti, li ho riscritti con NA
 df.replace("NA", np.nan, inplace=True) # Forzo la numericità nei NA
@@ -117,41 +117,6 @@ elif selezione == "Satelliti":
         ax.set_title("Gran Piramide di Uxmal: Radar")
         st.pyplot(fig)
     st.write("Le aree con colori più intensi nella vista radar rappresentano potenziali strutture artificiali, come piramidi o altre costruzioni. In un'analisi reale, si trovano algoritmi molto più complessi per la rilevazione anche di dati sotterranei.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
