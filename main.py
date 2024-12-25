@@ -100,8 +100,8 @@ elif selezione == "Satelliti":
     st.subheader("Utilizzo in Archeologia")
     st.write("Un utilizzo molto affascinante della mappatura satellitare è in archeologia, in particolare per la scoperta di segni di civiltà perdute. Negli ultimi 30 anni questo è un metodo molto utilizzato nel settore. I metodi più utilizzati sono le immagini a infrarosso, radar o il LiDAR (Light Detection and Ranging), che penetra il fogliame per mappare la topografia del terreno e rivelare resti nascosti. "
              "Un esempio interessante sono le piramidi Maya in Messico, ancora oggi, attraverso immagini satellitari, si stanno scoprendo sempre più strutture antiche create dai nostri antenati e un modo efficace è usare le immagini radar: ")
-    image_path = "PiramideUxmal.png"
-    image = AR.load_image_with_pillow(image_path)
+    Piramide_Uxmal = "PiramideUxmal.png"
+    image = AR.load_image_with_pillow(Piramide_Uxmal)
     view_option = st.radio("Seleziona la modalità di visualizzazione:",["Vista normale", "Vista radar"])
     if view_option == "Vista normale":
         st.write("### Vista normale")
@@ -117,7 +117,41 @@ elif selezione == "Satelliti":
         ax.set_title("Gran Piramide di Uxmal: Radar")
         st.pyplot(fig)
     st.write("Le aree con colori più intensi nella vista radar rappresentano potenziali strutture artificiali, come piramidi o altre costruzioni. In un'analisi reale, si trovano algoritmi molto più complessi per la rilevazione anche di dati sotterranei.")
+    st.title('Analisi delle Strutture Archeologiche con Immagini Satellitari')
 
+    image_path = "PiramideMaya.png" ############# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    image = AR.load_image(image_path)
+    st.image(image, caption="Immagine Satellitare Caricata", use_container_width=True)
+    
+    analysis_method = st.selectbox("Scegli il metodo di analisi", 
+                                   ["Seleziona un metodo", "Edge Detection", "NDVI", "Texture Analysis"])
+    
+    if analysis_method == "Edge Detection":
+        st.write("""
+        **Rilevamento dei Bordi (Edge Detection)**:
+        Questo metodo utilizza l'algoritmo di Canny per rilevare i bordi dell'immagine. 
+        È utile per identificare strutture geometriche o schemi nel terreno che potrebbero suggerire la presenza di strutture sotterranee o anomalie nel paesaggio.
+        """)
+        edges = AR.edge_detection(image)
+        AR.visualize_results(image, edges=edges)
+
+    elif analysis_method == "NDVI":
+        st.write("""
+        **Indice di Vegetazione (NDVI)**:
+        L'NDVI è un indice che misura la salute della vegetazione utilizzando i canali rosso e verde dell'immagine. 
+        Un valore elevato di NDVI indica una vegetazione sana, mentre un valore più basso può suggerire anomalie nel terreno, come la presenza di strutture sotterranee.
+        """)
+        ndvi = AR.compute_ndvi(image)
+        AR.visualize_results(image, ndvi=ndvi)
+
+    elif analysis_method == "Texture Analysis":
+        st.write("""
+        **Analisi della Texture (LBP - Local Binary Patterns)**:
+        Questa tecnica esamina la texture dell'immagine, cercando schemi di intensità locali che potrebbero essere associati a strutture o modifiche nel terreno. 
+        LBP è utile per distinguere tra aree naturali e potenziali strutture nascoste.
+        """)
+        lbp = AR.texture_analysis(image)
+        AR.visualize_results(image, lbp=lbp)
 
 
 
