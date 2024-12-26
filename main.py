@@ -49,7 +49,21 @@ if selezione == "Cos'è l'Astronomia?":
 
 elif selezione == "Telescopi":
     st.title("Telescopi")
-    FS.final_map()
+    df_tele = pd.read_csv("telescopi.csv")
+    st.subheader("Lista dei Telescopi")
+    st.write("I telescopi sono individuabili nella mappa e sono colorati in base al tipo di telescopio:")
+    st.markdown("""
+        * Blu: Telescopio ottico
+        * Verde: Telescopio Radio
+        * Rosso: Telescopio Solar
+    """)
+    selected_telescopio = st.selectbox("Seleziona un telescopio:", df_tele["Nome"], key = "selectbox_telescopio") # aveva bisogno di una chiave unica
+    selected_telescopio_data = df_tele[df_tele["Nome"] == selected_telescopio].squeeze() # squeeze mi restituisce unna serie con i dati della riga d'interesse (quiindi del telescopio)
+    FS.create_map(selected_telescopio_data, df_tele)
+    st.subheader(f"Informazioni su: {selected_telescopio}")
+    st.write(f"**Tipo:** {selected_telescopio_data['Tipo']}")
+    st.write(f"**Anno di costruzione:** {selected_telescopio_data['Anno']}")
+    st.write(f"**Caratteristiche:** {selected_telescopio_data['Caratteristiche']}")
     st.write("")
     st.write("")
     st.write("")
@@ -58,8 +72,8 @@ elif selezione == "Telescopi":
     st.write("")
     st.write("")
     st.write("")
- 
-    FS.add_telescope()
+    
+    FS.add_telescope(df_tele)
     
 elif selezione == "Esopianeti":
     st.title("Esopianeti")
@@ -70,7 +84,7 @@ elif selezione == "Esopianeti":
              "Per confermare un pianeta e meglio definirne le caratteristiche fisiche è necessario l'utilizzo di più tecniche differenti. Al momento attuale la tecnica di maggior successo è quella del transito. "
              "I primi risultati sono stati ottenuto con il metodo delle velocità radiali. Sono stati scoperti attualmente (2023) più di 5000 pianeti extrasolari. "
              "Già nel 1955 Otto Struve aveva prospettato la possibilità di scoprire sistemi planetari extrasolari proprio con il metodo del transito e delle velocità radiali.")
-    FS.plot_detection_methods(df)
+    PF.plot_detection_methods(df)
     st.write("Dal 2013 si nota un importante aumento nelle rilevazioni, soprattutto attraverso il metodo si transizione, questo è dovuto al fatto che nel 2009 la NASA ha iniziato la missione KEPLER. La missione, durata quasi 10 anni "
              "aveva come obiettivo quello di scoprire esopianeti e in particolare quelli che potenzialmente potrebbero ospitare vita extraterrestre.")
     st.subheader("Ci sono esopianeti abitabili?")
@@ -92,7 +106,7 @@ elif selezione == "Esopianeti":
     st.write("")
     st.write("")
     
-elif selezione == "Satelliti":
+elif selezione == "Satelliti":                                    
     st.title("Satelliti")
     st.write("Il mondo dei satelliti è affascinante, contribuiscono sia alla conoscenza dello spazio che allo studio approfondito della Terra.")
     st.subheader("Utilizzo in Archeologia")

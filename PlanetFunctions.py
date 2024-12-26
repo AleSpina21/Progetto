@@ -1,6 +1,6 @@
 from sklearn.linear_model import LinearRegression
 import streamlit as st
-
+import altair as alt
 # Funzione per la creazione del dataset che serve per le analisi.
 # Tolgo colonne qualitative
 # Tolgo colonne che hanno il 60% di valori mancanti (insignificanti), questo anche per non appensantire il modello e evitare multicollinearità
@@ -66,4 +66,26 @@ def habitable(d):
     
     return habitables
 
-
+# Sceglie l'anno con uno slider e in base all'anno mostra un plot in cui si conta il numero di rilevazioni fatte per tipo di rilevazione.
+# In base all'anno conta quante sono state fatte e crea una lista con [Metodo, conteggio]
+# nella parte encode sriviamo che carateristiche d'interesse
+# Utilizzando altair creiamo il grafico, grafico a barre, dove nella x ci sono i metodi mentre sulla y ci sono i conteggi.
+# con :N e :Q stiamo specificando se sono valori nominativi o quantitativi.
+#nella parte properties mettiamo il titolo che esce sul grafico, altezza e larghezza
+def plot_detection_methods(df):
+    selected_year = st.slider("Seleziona l'anno", min_value=int(2002), max_value=int(2023), step=1) # sceglie l'anno
+    filtered_data = df[df['discoveryyear'] == selected_year] # prenderò i dati appartenenti a quell'anno
+    method_counts = filtered_data['discoverymethod'].value_counts().reset_index() # conta 
+    method_counts.columns = ['discoverymethod', 'count']
+    chart = alt.Chart(method_counts).mark_bar().encode(
+        x=alt.X('discoverymethod:N', title='Metodo di rilevazione', sort='y'), # ordine dal più piccolo al più alto
+        y=alt.Y('count:Q', title='Numero di rilevazioni'), 
+        color='discoverymethod:N',
+        tooltip=['discoverymethod:N', 'count:Q'] # quando il cursore passa sopra la barra fa vedere queste informazioni
+    ).properties(
+        title=f"Numero di rilevazioni per metodo nel {selected_year}",
+        width=800,
+        height=400
+    )
+    
+    st.altair_chart(chart, use_container_width=True) # streamlit, mostra il grafico altair
