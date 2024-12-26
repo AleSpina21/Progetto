@@ -1,18 +1,16 @@
 import numpy as np
 from PIL import Image
-import numpy as np
 import cv2
 from skimage.feature import local_binary_pattern
 import streamlit as st
 
 
-def load_image_with_pillow(image_path):
+def load_image_gray(image_path):
     image = Image.open(image_path).convert('L')  # Apre l'immagine e la converte in scala di grigi
-    image = image.resize((500, 500))  # Ridimensiona
     return np.array(image)  # Converte l'immagine in un array numpy (rappresentazione d'immagine tramite matrice di numeri)
 
 
-# Funzione per caricare l'immagine
+# Carica l'immagine e converte in array numpy (ora è possibile lavorarci)
 def load_image(image_path):
     image = Image.open(image_path)
     return np.array(image)
@@ -20,6 +18,7 @@ def load_image(image_path):
 # 1. Edge Detection (Rilevamento dei Bordi) - Canny Edge Detector
 # Converte in scala di gridio l'immagin (ottimo per lavorarci con Canny)
 # Applico il metodo di Canny
+##### ATTENZIONE sto usando 2 diverse tecniche per convertire l'immagine in spettro di grigio, perché se ne uso uno uguale per tutti mi dà errori strani. Siccome è un dettaglio piccolissimo e insignificante, ho deciso di ignorare il problema.
 def edge_detection(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) 
     edges = cv2.Canny(gray, 100, 200)  
@@ -40,7 +39,7 @@ def compute_ndvi(image):
 def texture_analysis(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) 
     radius = 1  
-    n_points = 8 * radius  
+    n_points = 8 * radius  # evidenzio il fatto che in un quadrato 3x3, i punti vicini al pixel centrale di raggio 1 sono 8.
     lbp = local_binary_pattern(gray, n_points, radius, method="uniform")  # Calcoliamo LBP, c'è la funzione direttamente 
     return lbp
 

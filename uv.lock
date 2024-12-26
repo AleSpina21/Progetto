@@ -759,12 +759,15 @@ dependencies = [
     { name = "geodatasets" },
     { name = "geopandas" },
     { name = "matplotlib" },
+    { name = "numpy" },
     { name = "opencv-python" },
     { name = "pandas" },
+    { name = "pillow" },
     { name = "plotly" },
     { name = "pydeck" },
     { name = "scikit-image" },
     { name = "scikit-learn" },
+    { name = "scipy" },
     { name = "streamlit" },
 ]
 
@@ -774,12 +777,15 @@ requires-dist = [
     { name = "geodatasets", specifier = ">=2024.8.0" },
     { name = "geopandas", specifier = ">=1.0.1" },
     { name = "matplotlib", specifier = ">=3.10.0" },
+    { name = "numpy", specifier = ">=2.2.0" },
     { name = "opencv-python", specifier = ">=4.10.0.84" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pillow", specifier = ">=11.0.0" },
     { name = "plotly", specifier = ">=5.24.1" },
     { name = "pydeck", specifier = ">=0.9.1" },
     { name = "scikit-image", specifier = ">=0.25.0" },
     { name = "scikit-learn", specifier = ">=1.6.0" },
+    { name = "scipy", specifier = ">=1.14.1" },
     { name = "streamlit", specifier = ">=1.41.0" },
 ]
 
