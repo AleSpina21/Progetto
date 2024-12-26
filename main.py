@@ -14,8 +14,8 @@ from scipy.ndimage import gaussian_filter
 url = "open_exoplanet_catalogue.txt" # prendo i dati da questo file che verrà aggiornato ogni volta che un nuovo esopianeta verrà scoperto.
 df = pd.read_csv(url, delimiter=",", index_col=0)
 df = df.fillna("NA")  # ci sono dei valori mancanti, li ho riscritti con NA
+pd.set_option('future.no_silent_downcasting', True) # a quanto pare la funzione replace sarà declassata nelle prossime versionei di pandas, per far si che funzioni lo stesso c'era scritto di scrivere questo.
 df.replace("NA", np.nan, inplace=True) # Forzo la numericità nei NA
-
 
 
 
@@ -37,7 +37,7 @@ if selezione == "Cos'è l'Astronomia?":
         " poche scienze in cui il lavoro di ricerca del dilettante e dell'amatore (l'astrofilo) può giocare un ruolo rilevante, fornendo dati sulle stelle variabili o scoprendo comete, nove, supernove, asteroidi o altri oggetti.")
     YT_url = "https://www.youtube.com/watch?v=ujg8lsjdqT0"
     st.video(YT_url)
-    col1, col2 = st.columns([1, 3])
+    col1, col2 = st.columns([1, 2])
     with col1:
         st.image(
             "https://selbst-management.biz/wp-content/uploads/2013/10/albert-einstein.jpg", 
@@ -87,9 +87,7 @@ elif selezione == "Esopianeti":
     st.write("")
     st.write("Ora possiamo trovare i pianeti potenzialmente abitabili: Stanno in un determinato raggio dalla loro stella, hanno una certa massa e la loro stella deve avere una certa temperatura:")
     df_habit = PF.habitable(df2)
-    names = df_habit.index.tolist()
-    for name in names:
-        st.write(name)
+    st.dataframe(df_habit)
     st.write("Ovviamente, ci sono tantissimi altri fattori da tenere in considerazione, ma questo è solo un algoritmo iniziale, se si rilevano altri fattori importanti basta aggiungerli.")
     st.write("")
     st.write("")
@@ -117,11 +115,22 @@ elif selezione == "Satelliti":
         ax.set_title("Gran Piramide di Uxmal: Radar")
         st.pyplot(fig)
     st.write("Le aree con colori più intensi nella vista radar rappresentano potenziali strutture artificiali, come piramidi o altre costruzioni. In un'analisi reale, si trovano algoritmi molto più complessi per la rilevazione anche di dati sotterranei.")
-    st.title('Analisi delle Strutture Archeologiche con Immagini Satellitari')
-
+    st.write("")
+    st.write("")
+    st.write("Oltre al metodo radar, ci sono altre analisi territoriali che i satelliti sono in grado di fare. In particolare, i metodi sono i seguenti:")
+    st.markdown("""
+                * Edge Detection  
+                * Analisi dell'indice di vegetazione (NDVI)  
+                * Texture Analysis
+                """)
+    
+    st.write("Osserviano come vengono utilizzati i vari metodi nel caso del sito archeologico del Chichen Itza, in Messico.")
     Piramide_Maya = "PiramideMaya.png" 
-    image = AR.load_image(Piramide_Maya)  # ATTENZIONE PROVO AD USARE UNA E UNA SOLA FUNZIONE DI CARICAMENTO D'IMMAGINI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    st.image(image, caption="Immagine Satellitare Caricata", use_container_width=True)
+    image = AR.load_image(Piramide_Maya)  
+    fig, ax = plt.subplots()
+    ax.imshow(image)  
+    ax.set_title("El Castillo, Messico")
+    st.pyplot(fig)
     
     analysis_method = st.selectbox("Scegli il metodo di analisi", 
                                    ["Seleziona un metodo", "Edge Detection", "NDVI", "Texture Analysis"])
@@ -130,7 +139,8 @@ elif selezione == "Satelliti":
         st.write("""
         **Rilevamento dei Bordi (Edge Detection)**:
         Questo metodo utilizza l'algoritmo di Canny per rilevare i bordi dell'immagine. 
-        È utile per identificare strutture geometriche o schemi nel terreno che potrebbero suggerire la presenza di strutture sotterranee o anomalie nel paesaggio.
+        È utile per identificare strutture geometriche o schemi nel terreno che potrebbero suggerire la presenza di strutture sotterranee o anomalie nel paesaggio. 
+        Nell'osservare la mappa bisogna concentrarsi nell'individuare perimetri che abbiano una forma non naturale, come si nota bene nella forma della piramite e del perimetro che gli sta intorno.
         """)
         edges = AR.edge_detection(image)
         AR.visualize_results(image, edges=edges)
@@ -139,7 +149,8 @@ elif selezione == "Satelliti":
         st.write("""
         **Indice di Vegetazione (NDVI)**:
         L'NDVI è un indice che misura la salute della vegetazione utilizzando i canali rosso e verde dell'immagine. 
-        Un valore elevato di NDVI indica una vegetazione sana, mentre un valore più basso può suggerire anomalie nel terreno, come la presenza di strutture sotterranee.
+        Un valore elevato di NDVI (colore chiaro) indica una vegetazione sana, mentre un valore più basso (colore scuro) può suggerire anomalie nel terreno, come la presenza di strutture sotterranee.
+        Si individua facilmente la zona in cui sono presenti le strutture. Questa analisi è utile anche in casi in cui le strutture sono ricoperte dalla vegetazione, poiché le piante riflettono caratteristiche meno sane e sono quindi facilmente individuabili.
         """)
         ndvi = AR.compute_ndvi(image)
         AR.visualize_results(image, ndvi=ndvi)
@@ -148,7 +159,9 @@ elif selezione == "Satelliti":
         st.write("""
         **Analisi della Texture (LBP - Local Binary Patterns)**:
         Questa tecnica esamina la texture dell'immagine, cercando schemi di intensità locali che potrebbero essere associati a strutture o modifiche nel terreno. 
-        LBP è utile per distinguere tra aree naturali e potenziali strutture nascoste.
+        LBP è utile per distinguere tra aree naturali e potenziali strutture nascoste. La cosa importante da guardare qui sono le zone in cui i pallini sono molto vicini tra loro (Piramide, edifici, etc.). 
+        Si nota una zona interessante: Nella vegetazione a nord della piramide, si nota una zona vegetativa in cui i pallini sono molto vicini nettamente distaccata dalla zona sopra in cui i pallini sono più distaccati. Questa anomalia di texture potrebbe essere dato dall'immagine
+        ma potrebbe anche essere dato da delle caratteristiche anomale della zona, sarebbe da investigare sul posto...
         """)
         lbp = AR.texture_analysis(image)
         AR.visualize_results(image, lbp=lbp)

@@ -34,7 +34,7 @@ def compute_ndvi(image):
     return ndvi
 
 # 3. Texture Analysis (LBP - Local Binary Patterns)
-# La texture è molto complessa, in parole semplici evidenzia anomalie nella texture dei pixel e a queste anomalie viene associato un numero di 8 cifre binarie, in base a questo viene associato un puntino in vicinanza o meno. Dunque anomalie vengono rilevate in base a vicinanza di punti.
+# La texture analysis è molto complessa, in parole semplici evidenzia anomalie nella texture dei pixel e a queste anomalie viene associato un numero di 8 cifre binarie, in base a questo viene associato un puntino in vicinanza o meno. Dunque anomalie vengono rilevate in base a vicinanza di punti.
 # Si lavora su scala di grigi
 def texture_analysis(image):
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) 
@@ -45,13 +45,11 @@ def texture_analysis(image):
 
 # Funzione per visualizzare i risultati
 def visualize_results(image, edges=None, ndvi=None, lbp=None):  # non so perché ma se non metto quel image l'immagine mi esce 2 volte, non riesco a trovare un motivo
-    # Mostriamo solo le immagini risultanti
+    # Mostriamo solo le immagini una ad una
     if edges is not None:
-        st.image(edges, caption="Edge Detection (Canny)", use_container_width=True, clamp=True)
-    
+        st.image(edges, caption="Edge Detection (Canny)", use_container_width=True, clamp=True) # clamp = True fa si che i valori dei pixel array restino all'interno di un intervallo utile per renderizzare le immagini
     if ndvi is not None:
-        st.image(ndvi, caption="NDVI", use_container_width=True, clamp=True, channels="RGB")
-    
+        st.image(ndvi, caption="NDVI", use_container_width=True, clamp=True, channels="RGB")  # channels = "RGB" fa sic he utilizzi l'immagine in base agli spettri di Rosso Verde e Blu, fondamentale per questo metodo
     if lbp is not None:
         st.image(lbp, caption="Texture Analysis (LBP)", use_container_width=True, clamp=True)
 
