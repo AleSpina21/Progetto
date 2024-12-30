@@ -158,7 +158,7 @@ elif selezione == "Satelliti":
         """)
         edges = AR.edge_detection(image)
         AR.visualize_results(image, edges=edges)
-
+       
     elif analysis_method == "NDVI":
         st.write("""
         **Indice di Vegetazione (NDVI)**:

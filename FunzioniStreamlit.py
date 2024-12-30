@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import pydeck as pdk  # libreria python per la visualizzazione interattiva di dati geospaziali
-import altair as alt
 
 # Crea la mappa con i telescopi
 # Deck crea l'immagine della mappa, ci metto tutte le caratteristiche di cui ho bisogno: 
@@ -25,7 +24,7 @@ def create_map(telescope_data, df):
                 ],
         initial_view_state=pdk.ViewState(
                 longitude=telescope_data["Longitudine"] if telescope_data is not None else 0,
-                latitude=telescope_data["Latitudine"] if telescope_data is not None else 0, # if telescope_data is not None else 0 è utile nel momento in cui non ci sono i dati a disposizione, in questo caso la mappa sarà centrata in (0,0)
+                latitude=telescope_data["Latitudine"] if telescope_data is not None else 0, # if telescope_data is not None else 0 è utile nel momento in cui non ci sono i dati a disposizione, in questo caso la mappa sarà centrata in (0,0), anche se nn sarà questo il caso
                 zoom=3),
         map_style="mapbox://styles/mapbox/satellite-v9",  
     )
