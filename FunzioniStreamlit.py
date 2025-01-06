@@ -31,6 +31,18 @@ def create_map(telescope_data, df):
 
     st.pydeck_chart(deck) # visibile con streamlit
 
+
+def get_color(tipo):
+    if tipo.lower() == "ottico":
+        return "[0, 0, 255, 255]"  # Blu per telescopi ottici
+    elif tipo.lower() == "radio":
+        return "[0, 255, 0, 255]"  # Verde per telescopi radio
+    elif tipo.lower() == "solar":
+        return "[255, 0, 0, 255]"  # Rosso per telescopi solari
+    else:
+        return "[255, 255, 255, 255]"  # Bianco per altri tipi di telescopi (predefinito)
+
+
 # FUnzione che permette di inserire un telescopio se fai parte di Unipd, inoltre il telescopio comparirà nella mappa.
 # Se appartiene ad Unipd, prosegue. Ti fa inserire tutte le caratteristiche necessarie e crea un dataset con quelle informazioni.
 # concatena il nuovo dataset del telescopio con il dataset di tutti i telescopi.
@@ -47,15 +59,19 @@ def add_telescope(df):
         anno = st.number_input("Anno di costruzione:", min_value=1900, max_value=2024)
         caratteristiche = st.text_area("Caratteristiche del telescopio:")
         longitudine = st.number_input("Longitudine:", format="%.6f") # formatto 6 cifre dopo il puntino, questo è il formatto usato di solito per le longitudini e latitudini
-        latitudine = st.number_input("Latitudine:", format="%.6f") ### Chiediamo vari input all'utente
+        latitudine = st.number_input("Latitudine (se è Sud, mettere un valore negativo):", format="%.6f")
+        image = st.text_input("L'URL dell'immagine del telescopio:") ### Chiediamo vari input all'utente
         if st.button("Aggiungi telescopio"): # quando clicca, viene creato il subdataframe
+            color = get_color(tipo)
             new_telescopio = pd.DataFrame({
                 "Nome": [nome],
                 "Tipo": [tipo],
                 "Anno": [anno],
                 "Caratteristiche": [caratteristiche],
                 "Longitudine": [longitudine],
-                "Latitudine": [latitudine]
+                "Latitudine": [latitudine],
+                "color": [color],
+                "image" : [image]
             })
             df = pd.concat([df, new_telescopio], ignore_index=True) # concatenazione
             df.to_csv("telescopi.csv", index=False) # aggiurno il dataset originale

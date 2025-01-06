@@ -25,6 +25,8 @@ selezione = st.sidebar.radio("vai a:", ["Cos'è l'Astronomia?","Telescopi", "Eso
 if selezione == "Cos'è l'Astronomia?":
     st.image("https://www.astronomy.com/uploads/2023/09/Astronomy-Home-Page-Image.png")
     st.title("Astroworld")
+    st.write("Le meraviglie dell'Astronomia moderna. Spesso, se si pensa a questa Scienza secolare e affascinante, vengono in mente le stelle, le galassie, i telescopi giganti, i satelliti e così via; ma in tutto ciò, a cosa serve studiare queste cose? Astroworld vi presenterà "
+             "esempi che dimostreranno come l'Astronomia moderna sia tanto affascinante quanto utile!")
     st.subheader("Piattaforma di ricerca astronomica")
     st.text("L'astronomia è la scienza naturale che si occupa dell'osservazione e della spiegazione degli eventi celesti che si verificano nello spazio." 
         " Studia le origini e l'evoluzione, le proprietà fisiche, chimiche e temporali degli oggetti che formano l'universo e che possono essere osservati sulla sfera celeste." 
@@ -49,11 +51,11 @@ if selezione == "Cos'è l'Astronomia?":
 
 elif selezione == "Telescopi":
     st.title("Telescopi")
-    df_tele = pd.read_csv("telescopi.csv")
+    df_tele = pd.read_csv("telescopi.csv", quotechar='"')
     st.subheader("Lista dei Telescopi")
     st.write("I telescopi sono individuabili nella mappa e sono colorati in base al tipo di telescopio:")
     st.markdown("""
-        * Blu: Telescopio ottico
+        * Blu: Telescopio Ottico
         * Verde: Telescopio Radio
         * Rosso: Telescopio Solar
     """)
@@ -61,12 +63,16 @@ elif selezione == "Telescopi":
     selected_telescopio_data = df_tele[df_tele["Nome"] == selected_telescopio].squeeze() # squeeze mi restituisce unna serie con i dati della riga d'interesse (quiindi del telescopio)
     FS.create_map(selected_telescopio_data, df_tele)
     st.subheader(f"Informazioni su: {selected_telescopio}")
+    st.image(selected_telescopio_data["image"])
     st.write(f"**Tipo:** {selected_telescopio_data['Tipo']}")
     st.write(f"**Anno di costruzione:** {selected_telescopio_data['Anno']}")
     st.write(f"**Caratteristiche:** {selected_telescopio_data['Caratteristiche']}")
     st.write("")
     st.write("")
     st.write("")
+    st.subheader("Lo sapevi?")
+    st.write("I telescopi sono di 2 tipi: a lente o a specchio, lo studio approfondito e il progresso di questi ha portato a innumerevoli benefici e innovazioni. Un'invenzione importante derivata dallo studio dell'Ottica, su cui si basono i telescopi a lente, sono gli occhiali da lettura. "
+             "Un'altra utilità deriva dall'utilizzo dell'infrarosso per studiare il cielo, questo infatti ha un utilizzo importantissimo nella diagnostica medica per esempio.")
     st.write("")
     st.write("")
     st.write("")
