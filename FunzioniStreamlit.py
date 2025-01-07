@@ -58,7 +58,7 @@ def add_telescope(df):
         tipo = st.text_input("Tipo di telescopio:")
         anno = st.number_input("Anno di costruzione:", min_value=1900, max_value=2024)
         caratteristiche = st.text_area("Caratteristiche del telescopio:")
-        longitudine = st.number_input("Longitudine:", format="%.6f") # formatto 6 cifre dopo il puntino, questo è il formatto usato di solito per le longitudini e latitudini
+        longitudine = st.number_input("Longitudine(se è Ovest, mettere un valore negativo):", format="%.6f") # formatto 6 cifre dopo il puntino, questo è il formatto usato di solito per le longitudini e latitudini
         latitudine = st.number_input("Latitudine (se è Sud, mettere un valore negativo):", format="%.6f")
         image = st.text_input("L'URL dell'immagine del telescopio:") ### Chiediamo vari input all'utente
         if st.button("Aggiungi telescopio"): # quando clicca, viene creato il subdataframe
