@@ -31,14 +31,14 @@ def create_map(telescope_data, df):
 
     st.pydeck_chart(deck) # visibile con streamlit
 
-
+# Funzione che mi assenga i colori ai tipi di telescopio tramite la scala di colori
 def get_color(tipo):
     if tipo.lower() == "ottico":
-        return "[0, 0, 255, 255]"  # Blu per telescopi ottici
+        return "[0, 0, 255, 255]"  # Blu 
     elif tipo.lower() == "radio":
-        return "[0, 255, 0, 255]"  # Verde per telescopi radio
+        return "[0, 255, 0, 255]"  # Verde 
     elif tipo.lower() == "solar":
-        return "[255, 0, 0, 255]"  # Rosso per telescopi solari
+        return "[255, 0, 0, 255]"  # Rosso
     else:
         return "[255, 255, 255, 255]"  # Bianco per altri tipi di telescopi (predefinito)
 
